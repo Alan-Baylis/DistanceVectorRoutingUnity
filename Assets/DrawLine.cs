@@ -43,7 +43,14 @@ public class DrawLine : MonoBehaviour
 
     public void drawLines ()
     {
+        ///cia nezinia ar veiks////
+        for (int i=0; i<Line.Count; ++i)
+        {
+            Destroy(Text[i]);
+            Destroy(Line[i]);
+        }
         Line.Clear();
+        Text.Clear();
 
         for (int i=0; i<alpha.Length; ++i)
         {
@@ -87,7 +94,7 @@ public class DrawLine : MonoBehaviour
         myTextObject.transform.position = temp;
 
         myTextObject.AddComponent("TextMesh");
-        myTextObject.AddComponent("MeshRenderer");
+        //myTextObject.AddComponent("MeshRenderer");
         //myTextObject.renderer.material.color = Color.black;
         
         // Get components
@@ -109,13 +116,31 @@ public class DrawLine : MonoBehaviour
 
     void CreateNode ()
     {
+        bool isThere = false;
+
         Vector3 v3 = Input.mousePosition;
         v3 = Camera.main.ScreenToWorldPoint(v3);
         v3.z = -1;
 
         GameObject test = Instantiate(newNode, v3, newNode.transform.rotation)as GameObject;
-        int i = Node.Length;
-        test.GetComponentInChildren<TextMesh>().text = alpha[i].ToString();
+
+        for (int i=0; i<alpha.Length; ++i)
+        {
+            isThere=false;
+            for(int j=0; j<Node.Length; ++j)
+            {
+                if (Node[j].GetComponentInChildren<TextMesh>().text == alpha[i].ToString())
+                {
+                    isThere = true;
+                }
+            }
+            if (!isThere)
+            {
+                test.GetComponentInChildren<TextMesh>().text = alpha[i].ToString();
+                break;
+            }
+        }
+
     }
     
 }
