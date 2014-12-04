@@ -187,8 +187,8 @@ public class NodeInfo : MonoBehaviour
             {
                 costTemp = lineMatrixTemp [second, first];
             }
-            lineMatrixTemp [first, second] = 0;
-            lineMatrixTemp [second, first] = 0;
+            //lineMatrixTemp [first, second] = 0;
+            //lineMatrixTemp [second, first] = 0;
             getDistanceVector(routeNode [i], lineMatrixWithoutReference, costTemp);
         }
     }
