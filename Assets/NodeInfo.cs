@@ -9,6 +9,7 @@ public class NodeInfo : MonoBehaviour
     public Text text;
     public Text text2;
     private int[,] lineMatrix;
+    private int[,] lineMatrixWithoutReference;
     // private int[,] lineMatrixTemp;
     char[] alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
     public List<char> routeNode;
@@ -33,7 +34,7 @@ public class NodeInfo : MonoBehaviour
     void OnMouseDown()
     {
         text.text = "NODE NAME : " + gameObject.GetComponentInChildren<TextMesh>().text + "\n";
-        for (int i=0; i<routeNode.Count; ++i)
+        for (int i=0; i<routeNodeFinal.Count; ++i)
         {
             text.text += routeNodeFinal [i] + "  -  " + routeCostFinal [i].ToString() + "\n";
         }
@@ -91,6 +92,7 @@ public class NodeInfo : MonoBehaviour
         }
         if (temp != null)
         {
+            //call next node
             temp.GetComponent<NodeInfo>().searchAll(lineMatrixTemp);
 
             int RouteIndex = 0;
@@ -110,7 +112,7 @@ public class NodeInfo : MonoBehaviour
             for (int i=0; i<temp.GetComponent<NodeInfo>().routeCostFinal.Count; ++i)
             {      
                 routeNodeFinal.Add(temp.GetComponent<NodeInfo>().routeNodeFinal [i]);
-                routeCostFinal.Add(temp.GetComponent<NodeInfo>().routeCostFinal [i]);
+                routeCostFinal.Add(temp.GetComponent<NodeInfo>().routeCostFinal [i] + cost);
             }
         }
     }
@@ -119,8 +121,47 @@ public class NodeInfo : MonoBehaviour
     {
         int first = 0, second = 0, costTemp = 0;
 
+        routeNodeFinal.Clear();
+        routeCostFinal.Clear();
+
         fillFirstNodes(lineMatrixTemp);
         generateDistanceVector(lineMatrixTemp);
+
+        //line matrix without possibilyt ro search this node again - for reference
+        lineMatrixWithoutReference = new int[alpha.Length, alpha.Length];
+        for (int j=0; j<alpha.Length; ++j)
+        {
+            for (int k=0; k<alpha.Length; ++k)
+            {
+                lineMatrixWithoutReference [j, k] = lineMatrixTemp [j, k];
+            }
+        }
+
+        for (int i=0; i<routeNode.Count; ++i)
+        {
+            for (int j=0; j<alpha.Length; ++j)
+            {
+                if (gameObject.GetComponentInChildren<TextMesh>().text == alpha [j].ToString())
+                {
+                    first = j;
+                    break;
+                }
+            }
+            for (int j=0; j<alpha.Length; ++j)
+            {
+                if (routeNode [i] == alpha [j])
+                {
+                    second = j;
+                    break;
+                }
+            }
+
+            lineMatrixWithoutReference [first, second] = 0;
+            lineMatrixWithoutReference [second, first] = 0;
+        }
+
+
+
         for (int i=0; i<routeNode.Count; ++i)
         {
             for (int j=0; j<alpha.Length; ++j)
@@ -148,7 +189,7 @@ public class NodeInfo : MonoBehaviour
             }
             lineMatrixTemp [first, second] = 0;
             lineMatrixTemp [second, first] = 0;
-            getDistanceVector(routeNode [i], lineMatrixTemp, costTemp);
+            getDistanceVector(routeNode [i], lineMatrixWithoutReference, costTemp);
         }
     }
 
