@@ -26,6 +26,7 @@ public class DrawLine : MonoBehaviour
         Line = new List<LineRenderer>();
         Node = GameObject.FindGameObjectsWithTag("node");
         lineMatrix [0, 1] = 5;
+        lineMatrix [1, 2] = 10;
         drawLines();
 
     }
