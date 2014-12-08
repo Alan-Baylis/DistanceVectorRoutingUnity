@@ -120,6 +120,7 @@ public class NodeInfo : MonoBehaviour
     public void searchAll(int[,] lineMatrixTemp)
     {
         int first = 0, second = 0, costTemp = 0;
+   
 
         routeNodeFinal.Clear();
         routeCostFinal.Clear();
